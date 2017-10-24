@@ -11,7 +11,7 @@ var svg = d3.select('svg')
     .attr('transform', 'translate(' + marginLeft + ',' + marginTop + ')');
 
 //these are the size that the axes will be on the screen; set the domain values after the data loads.
-var scaleX = d3.scaleBand().rangeRound([0, 600]).padding(0.1);
+var scaleX = d3.scaleBand().rangeRound([0, 600]).padding(0.1);//padding for the extra space with connecting points with two axises
 var scaleY = d3.scaleLinear().range([400, 0]);
 
 
@@ -26,6 +26,7 @@ d3.csv('./countryData.csv', function(dataIn){
 
     scaleX.domain(loadData.map(function(d){return d.countryCode;}));
     scaleY.domain([0, d3.max(loadData.map(function(d){return +d.totalPop}))]);
+    //max d3.max sets the cap of the data for the range
 
     // Add the x Axis
     svg.append("g")
@@ -58,7 +59,7 @@ d3.csv('./countryData.csv', function(dataIn){
         .enter()
         .append('rect')
         .attr('class','bars')
-        .attr('fill', "slategray");
+        .attr('fill', "pink");
 
     //call the drawPoints function below, and hand it the data2016 variable with the 2016 object array in it
     drawPoints(loadData);
@@ -69,7 +70,7 @@ d3.csv('./countryData.csv', function(dataIn){
 //without adding more circles each time.
 function drawPoints(pointData){
 
-    scaleY.domain([0, d3.max(pointData.map(function(d){return +d.totalPop}))]);
+    scaleY.domain([0, d3.max(pointData.map(function(d){return +d.totalPop}))]); //change the domain along with the years with data, rescale the data!
 
     svg.selectAll('.yaxis')
         .call(d3.axisLeft(scaleY));
@@ -83,10 +84,10 @@ function drawPoints(pointData){
             return scaleY(d.totalPop);
         })
         .attr('width',function(d){
-            return scaleX.bandwidth();
+            return scaleX.bandwidth();//bandwidth as part of the range band scale type. telling how wide the bars are.
         })
         .attr('height',function(d){
-            return 400 - scaleY(d.totalPop);  //400 is the beginning domain value of the y axis, set above
+            return 400 - scaleY(d.totalPop);  //400 is the beginning domain value of the y axis, set above range[400,0]
         });
 
 }
